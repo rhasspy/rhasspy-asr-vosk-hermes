@@ -473,7 +473,9 @@ class AsrHermesMqtt(HermesClient):
 
                 # Generate list of all words used
                 with open(self.words_json_path, "w") as words_json_file:
-                    json.dump([" ".join(words), "[unk]"], words_json_file)
+                    json.dump(
+                        [" ".join(words), "[unk]"], words_json_file, ensure_ascii=False
+                    )
             else:
                 _LOGGER.warning("Not overwriting word lsits")
 
