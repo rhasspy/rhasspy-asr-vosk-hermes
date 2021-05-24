@@ -30,6 +30,8 @@ from rhasspyhermes.audioserver import AudioFrame, AudioSessionFrame
 from rhasspyhermes.base import Message
 from rhasspyhermes.client import GeneratorType, HermesClient, TopicArgs
 
+from .utils import find_model_dir
+
 _DIR = Path(__file__).parent
 _LOGGER = logging.getLogger("rhasspyasr_vosk_hermes")
 
@@ -153,8 +155,13 @@ class AsrHermesMqtt(HermesClient):
             else:
                 if self.model is None:
                     assert self.model_path is not None, "No model path"
-                    _LOGGER.debug("Loading Vosk model from %s", self.model_path)
-                    self.model = vosk.Model(str(self.model_path))
+                    model_dir = find_model_dir(self.model_path)
+                    assert (
+                        model_dir is not None
+                    ), f"Vosk model not found in {self.model_path}"
+
+                    _LOGGER.debug("Loading Vosk model from %s", model_dir)
+                    self.model = vosk.Model(str(model_dir))
 
                 assert self.model is not None
 

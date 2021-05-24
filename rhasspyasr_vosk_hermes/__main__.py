@@ -10,6 +10,7 @@ import vosk
 import rhasspyhermes.cli as hermes_cli
 
 from . import AsrHermesMqtt
+from .utils import find_model_dir
 
 _LOGGER = logging.getLogger("rhasspyasr_vosk_hermes")
 
@@ -62,10 +63,12 @@ def run_mqtt(args: argparse.Namespace):
     if args.words_json:
         args.words_json = Path(args.words_json)
 
-    if args.model.is_dir():
+    model_dir = find_model_dir(args.model)
+
+    if model_dir is not None:
         # Load now
-        _LOGGER.debug("Loading model from %s", args.model)
-        model = vosk.Model(str(args.model))
+        _LOGGER.debug("Loading model from %s", model_dir)
+        model = vosk.Model(str(model_dir))
     else:
         # Load later
         model = args.model
